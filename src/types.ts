@@ -1,3 +1,5 @@
+import { WebSocket } from "ws";
+
 export interface Position {
     x: number,
     y: number,
@@ -22,14 +24,14 @@ export interface UserType {
 export interface RoomState {
     roomId: number,
     roomUsers: UserType[],
-    registerNewUser: ({ name, password }: { name: string, password: number }) => void,
+    registerNewUser: (user: UserType) => void,
 }
 
 export enum MessageType {
     reg = 'reg',
     updateWinners = 'update_winners',
     createRoom = 'create_room',
-    addPlayerToRoom = 'add_player_to_room',
+    addUserToRoom = 'add_user_to_room',
     createGame = 'create_game',
     updateRoom = 'update_room',
     addShips = 'add_ships',
@@ -44,4 +46,10 @@ export interface WEbSocketRawData {
     type: MessageType,
     data: any,
     id: number,
+}
+
+
+export interface ExpWebSocket extends WebSocket {
+    id: number,
+    user: UserType[]
 }

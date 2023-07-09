@@ -23,10 +23,10 @@ export const createWebSocket = {
         createGame: (idGame: number, idPlayer: number) => JSON.stringify({
             type: MessageType.createGame,
             data:
-            {
-                idGame,
-                idPlayer,
-            },
+                JSON.stringify({
+                    idGame,
+                    idPlayer,
+                }),
             id: 0,
         }),
         updateRoom: (rooms: Array<{ roomId: number, roomUsers: UserType[] }>) => JSON.stringify({
@@ -39,36 +39,36 @@ export const createWebSocket = {
         startGame: (ships: ShipState[], currentPlayerIndex: number) => JSON.stringify({
             type: MessageType.startGame,
             data:
-            {
-                ships,
-                currentPlayerIndex,
-            },
+                JSON.stringify({
+                    ships,
+                    currentPlayerIndex,
+                }),
             id: 0,
         }),
         attack: (position: Position, currentPlayer: number, status: HitStatus) => JSON.stringify({
             type: MessageType.attack,
             data:
-            {
-                position,
-                currentPlayer,
-                status,
-            },
+                JSON.stringify({
+                    position,
+                    currentPlayer,
+                    status,
+                }),
             id: 0,
         }),
         turn: (currentPlayer: number) => JSON.stringify({
             type: MessageType.turn,
             data:
-            {
-                currentPlayer,
-            },
+                JSON.stringify({
+                    currentPlayer,
+                }),
             id: 0,
         }),
         finishGame: (winPlayer: number) => JSON.stringify({
             type: MessageType.finish,
             data:
-            {
-                winPlayer,
-            },
+                JSON.stringify({
+                    winPlayer,
+                }),
             id: 0,
         })
     }

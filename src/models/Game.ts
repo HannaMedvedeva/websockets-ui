@@ -1,30 +1,46 @@
-import { RoomState, UserType } from "../types"
+import { ExpWebSocket, RoomState, UserType } from "../types"
 import { createWebSocket } from "../webSockets/createWebSocket"
 import { Room } from "./Room"
 
 export class Game {
-    public rooms: RoomState[] = [new Room()]
+    public rooms: RoomState[] = []
     public users: UserType[] = []
 
-    public addUserToTheRoom(user: { name: string, password: number }) {
-        const lastRoom = this.rooms[this.rooms.length - 1]
-        if (lastRoom.roomUsers.length < 2) {
-            return lastRoom.registerNewUser(user)
-        } else {
-            const newRoom = new Room()
-            this.rooms.push(newRoom)
-            return newRoom.registerNewUser(user)
-        }
+    public startGame(gameId: number, userId: number) {
+        console.log(createWebSocket.room.createGame(gameId, userId))
+        return createWebSocket.room.createGame(gameId, userId)
     }
 
-    public addUserToTheGame(user: { name: string, password: number }) {
-        this.users.push({ name: user.name, index: user.password })
+    public addUserToTheRoom(data: { indexRoom: number }, connections: ExpWebSocket[]) {
+
+        const roomToUpdate = this.rooms.find(({ roomId }) => roomId === data.indexRoom)
+        console.log('2', roomToUpdate)
+        console.log('3', this.rooms)
+        const gameId = roomToUpdate?.roomUsers[0].index
+
+        gameId && connections.forEach((ws) => {
+            ws.send(this.startGame(gameId, ws.id))
+        })
+
+        // this.rooms = this.rooms.filter(({ roomId }) => roomId !== data.indexRoom)
+        // sendToAll(this.updateRooms())
+    }
+
+    public addUserToTheGame(name: string, index: number) {
+        this.users.push({ name, index })
         const error = false
         const errorText = ''
-        return createWebSocket.player.registerUser(user.name, user.password, error, errorText)
+        return createWebSocket.player.registerUser(name, index, error, errorText)
     }
 
     public updateRooms() {
         return createWebSocket.room.updateRoom(this.rooms.map(({ roomId, roomUsers }) => ({ roomId, roomUsers })))
+    }
+
+    public createRoom(wsId: number) {
+        const currentUser = this.users.find(({ index }) => index === wsId)
+        this.rooms.push(new Room(currentUser ? [currentUser] : []))
+
+        return this.updateRooms()
     }
 }
