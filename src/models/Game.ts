@@ -21,9 +21,6 @@ export class Game {
         gameId && connections.forEach((ws) => {
             ws.send(this.startGame(gameId, ws.id))
         })
-
-        // this.rooms = this.rooms.filter(({ roomId }) => roomId !== data.indexRoom)
-        // sendToAll(this.updateRooms())
     }
 
     public addUserToTheGame(name: string, index: number) {
